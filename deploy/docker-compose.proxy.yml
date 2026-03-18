@@ -1,0 +1,11 @@
+services:
+  sugar-guard-proxy:
+    build:
+      context: ..
+      dockerfile: server/Dockerfile
+    env_file:
+      - ../server/.env
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+
