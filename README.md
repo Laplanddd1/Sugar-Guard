@@ -72,13 +72,14 @@ pnpm build
 
 | 模块 | 预览 |
 | --- | --- |
+| Dify 工作流 | ![dify界面](picture/dify界面.png)<br/>![dify实例-打卡分析](picture/dify实例-打卡分析.png) |
 | 登录 / 首页 | ![登录页面](picture/登录页面.png)<br/>![主页面](picture/主页面.png) |
 | 咨询与助手 | ![咨询医师界面](picture/咨询医师界面.png)<br/>![糖尿病健康助手界面](picture/糖尿病健康助手界面.png) |
 | 风险预测 | ![糖尿病风险预测主界面](picture/糖尿病风险预测主界面.png) |
 | 生活方案定制 | ![生活方案定制-生活习惯描述](picture/生活方案定制-生活习惯描述.png)<br/>![生活方案定制-期望或已有建议](picture/生活方案定制-期望或已有建议.png)<br/>![生活方案定制-个性化方案生成](picture/生活方案定制-个性化方案生成.png) |
 | 打卡与提醒 | ![打卡页面上半](picture/打卡页面上半.png)<br/>![打卡页面下半](picture/打卡页面下半.png)<br/>![打卡-提醒设置界面](picture/打卡-提醒设置界面.png)<br/>![打卡-本月总结](picture/打卡-本月总结.png) |
 | 趋势与解读 | ![方案-趋势上半](picture/方案-趋势上半.png)<br/>![方案-趋势下半](picture/方案-趋势下半.png) |
-| Dify 工作流 | ![dify界面](picture/dify界面.png)<br/>![dify实例-打卡分析](picture/dify实例-打卡分析.png) |
+
 
 ## 目录结构
 - `pages/`：页面组件
