@@ -13,6 +13,25 @@ export const RiskAssessment: React.FC = () => {
   const [showRaw, setShowRaw] = useState(false);
 
   const parsed = useMemo(() => {
+    const normalizeUserFacingText = (text: string) => {
+      let t = String(text || '').trim();
+      if (!t) return t;
+      t = t.replace(/```json/gi, '```').trim();
+      t = t.replace(/```/g, '').trim();
+      if (t.includes('</details>')) {
+        const parts = t.split('</details>');
+        t = (parts[parts.length - 1] || '').trim();
+      }
+      t = t.replace(/<details[\s\S]*?<\/details>/gi, '').trim();
+      t = t.replace(/<\/?[^>]+>/g, '').trim();
+      const lastBracket = t.lastIndexOf('【');
+      if (lastBracket !== -1) t = t.slice(lastBracket).trim();
+      t = t.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+      const lines = t.split('\n').map(s => s.trim()).filter(Boolean);
+      if (lines.length > 2) return lines.slice(0, 2).join('\n');
+      return lines.join('\n');
+    };
+
     const tryParseJson = (text: string) => {
       const cleaned = text.trim().replace(/```json/g, '').replace(/```/g, '').trim();
       try {
@@ -26,7 +45,10 @@ export const RiskAssessment: React.FC = () => {
     if (!value) return null;
     if (typeof value === 'string') {
       const asJson = tryParseJson(value);
-      return asJson ?? value;
+      if (asJson) return asJson;
+      const cleanedText = normalizeUserFacingText(value);
+      const asJsonAfterClean = cleanedText ? tryParseJson(cleanedText) : null;
+      return asJsonAfterClean ?? cleanedText;
     }
     return value;
   }, [result]);
