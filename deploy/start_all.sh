@@ -58,6 +58,9 @@ server {
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_buffering off;
     proxy_cache off;
+    proxy_connect_timeout 60s;
+    proxy_send_timeout 600s;
+    proxy_read_timeout 600s;
     proxy_pass http://127.0.0.1:3001;
   }
 
