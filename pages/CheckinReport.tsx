@@ -17,6 +17,24 @@ export const CheckinReport: React.FC = () => {
   const [aiText, setAiText] = useState<string | null>(null);
   const [loadingAi, setLoadingAi] = useState(false);
 
+  const aiSummary = useMemo(() => {
+    if (!aiText) return null;
+    const raw = aiText.trim().replace(/```json/g, '').replace(/```/g, '').trim();
+    try {
+      const parsed = JSON.parse(raw);
+      if (!parsed || typeof parsed !== 'object') return null;
+      const obj: any = parsed;
+      const summary = typeof obj.summary === 'string' ? obj.summary : '';
+      const keyIssues = Array.isArray(obj.keyIssues) ? obj.keyIssues.filter((x: any) => typeof x === 'string') : [];
+      const actions = Array.isArray(obj.actions) ? obj.actions.filter((x: any) => typeof x === 'string') : [];
+      const nextGoals = Array.isArray(obj.nextGoals) ? obj.nextGoals.filter((x: any) => typeof x === 'string') : [];
+      if (!summary && keyIssues.length === 0 && actions.length === 0 && nextGoals.length === 0) return null;
+      return { summary, keyIssues, actions, nextGoals };
+    } catch {
+      return null;
+    }
+  }, [aiText]);
+
   const monthKey = useMemo(() => {
     const mm = `${monthCursor.monthIndex + 1}`.padStart(2, '0');
     return `${monthCursor.year}-${mm}`;
@@ -305,9 +323,56 @@ export const CheckinReport: React.FC = () => {
           </button>
         </div>
 
-        <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm text-slate-700 whitespace-pre-wrap">
-          {aiText || localSummary}
-        </div>
+        {aiSummary ? (
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm text-slate-700 space-y-4">
+            {aiSummary.summary ? (
+              <div>
+                <div className="text-slate-900 font-bold mb-2">概览</div>
+                <div className="whitespace-pre-wrap">{aiSummary.summary}</div>
+              </div>
+            ) : null}
+            {aiSummary.keyIssues.length > 0 ? (
+              <div>
+                <div className="text-slate-900 font-bold mb-2">主要问题</div>
+                <div className="space-y-2">
+                  {aiSummary.keyIssues.map((t: string, idx: number) => (
+                    <div key={idx} className="bg-white border border-slate-200 rounded-xl p-3">
+                      {t}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {aiSummary.actions.length > 0 ? (
+              <div>
+                <div className="text-slate-900 font-bold mb-2">本月改进建议</div>
+                <div className="space-y-2">
+                  {aiSummary.actions.map((t: string, idx: number) => (
+                    <div key={idx} className="bg-white border border-slate-200 rounded-xl p-3">
+                      {t}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+            {aiSummary.nextGoals.length > 0 ? (
+              <div>
+                <div className="text-slate-900 font-bold mb-2">下月目标</div>
+                <div className="space-y-2">
+                  {aiSummary.nextGoals.map((t: string, idx: number) => (
+                    <div key={idx} className="bg-white border border-slate-200 rounded-xl p-3">
+                      {t}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : (
+          <div className="bg-slate-50 border border-slate-100 rounded-xl p-4 text-sm text-slate-700 whitespace-pre-wrap">
+            {aiText || localSummary}
+          </div>
+        )}
       </div>
     </div>
   );

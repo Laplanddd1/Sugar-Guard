@@ -23,33 +23,41 @@
 ### 1. 安装依赖
 
 ```bash
-npm install
+pnpm install
 ```
 
 ### 2. 启动项目
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-## 部署到服务器
+## Dify 对接方式（安全开源）
 
-本项目为纯前端静态站点，部署建议使用 Nginx 托管 `dist/` 并配置 `/api` 反向代理。
+前端不直接持有 Dify Key，而是统一请求：
 
-详见：[DEPLOY.md](file:///f:/小学期/2025-12/diabetesAssistant/DEPLOY.md)
+```text
+POST /api/dify/workflows/run
+POST /api/dify/chat-messages
+```
 
-### 3. 后端对接说明
+由你自己的小后端（本仓库 `server/`）读取环境变量中的 Dify Key 并转发到 Dify。
 
-本项目配置了反向代理，连接到小组部署的云服务器。
+## 项目截图
 
-- **前端请求地址**: `/api/v1/...`
-- **代理目标地址**: `http://47.110.76.245`
-
-请确保开发环境能够访问公网。
+![登录页面](picture/登录页面.png)
+![主页面](picture/主页面.png)
+![咨询医师界面](picture/咨询医师界面.png)
+![糖尿病风险预测主界面](picture/糖尿病风险预测主界面.png)
+![生活方案定制-生活习惯描述](picture/生活方案定制-生活习惯描述.png)
+![生活方案定制-期望或已有建议](picture/生活方案定制-期望或已有建议.png)
+![生活方案定制-个性化方案生成](picture/生活方案定制-个性化方案生成.png)
+![打卡页面上半](picture/打卡页面上半.png)
+![打卡页面下半](picture/打卡页面下半.png)
 
 ## 目录结构
 
-- `/src/pages`: 页面组件
-- `/src/services`: API 请求服务 (Dify 对接)
-- `/src/contexts`: 全局状态管理 (用户登录态)
-- `/src/types`: TypeScript 类型定义
+- `pages/`: 页面组件
+- `services/`: API 请求服务（走 /api/dify）
+- `contexts/`: 全局状态管理（用户登录态）
+- `server/`: Dify Key 代理服务（Node）
