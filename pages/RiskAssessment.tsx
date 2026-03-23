@@ -12,26 +12,33 @@ export const RiskAssessment: React.FC = () => {
   const [result, setResult] = useState<any>(null);
   const [showRaw, setShowRaw] = useState(false);
 
-  const parsed = useMemo(() => {
-    const normalizeUserFacingText = (text: string) => {
-      let t = String(text || '').trim();
-      if (!t) return t;
-      t = t.replace(/```json/gi, '```').trim();
-      t = t.replace(/```/g, '').trim();
-      if (t.includes('</details>')) {
-        const parts = t.split('</details>');
-        t = (parts[parts.length - 1] || '').trim();
-      }
-      t = t.replace(/<details[\s\S]*?<\/details>/gi, '').trim();
-      t = t.replace(/<\/?[^>]+>/g, '').trim();
-      const lastBracket = t.lastIndexOf('【');
-      if (lastBracket !== -1) t = t.slice(lastBracket).trim();
-      t = t.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
-      const lines = t.split('\n').map(s => s.trim()).filter(Boolean);
-      if (lines.length > 2) return lines.slice(0, 2).join('\n');
-      return lines.join('\n');
-    };
+  const normalizeUserFacingText = (text: string) => {
+    let t = String(text || '').trim();
+    if (!t) return t;
+    t = t.replace(/```json/gi, '```').trim();
+    t = t.replace(/```/g, '').trim();
+    if (t.includes('</details>')) {
+      const parts = t.split('</details>');
+      t = (parts[parts.length - 1] || '').trim();
+    }
+    t = t.replace(/<details[\s\S]*?<\/details>/gi, '').trim();
+    t = t.replace(/<\/?[^>]+>/g, '').trim();
+    const lastBracket = t.lastIndexOf('【');
+    if (lastBracket !== -1) t = t.slice(lastBracket).trim();
+    t = t.replace(/\r\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+    const firstLine = t.split('\n').map(s => s.trim()).filter(Boolean)[0] || '';
+    return firstLine;
+  };
 
+  const pickFirstString = (obj: any, keys: string[]) => {
+    for (const k of keys) {
+      const v = obj?.[k];
+      if (typeof v === 'string' && v.trim()) return v;
+    }
+    return '';
+  };
+
+  const parsed = useMemo(() => {
     const tryParseJson = (text: string) => {
       const cleaned = text.trim().replace(/```json/g, '').replace(/```/g, '').trim();
       try {
@@ -60,10 +67,24 @@ export const RiskAssessment: React.FC = () => {
         title: '评估结果',
         level: '',
         probabilityText: '',
-        content: parsed,
+        content: normalizeUserFacingText(parsed) || parsed,
       };
     }
     if (parsed && typeof parsed === 'object') {
+      const directText =
+        pickFirstString(parsed, ['result', 'text', 'answer', 'message', 'content']) ||
+        pickFirstString(parsed?.obj, ['result', 'text', 'answer', 'message', 'content']);
+
+      if (directText) {
+        const content = normalizeUserFacingText(directText) || directText;
+        return {
+          title: '评估结果',
+          level: '',
+          probabilityText: '',
+          content,
+        };
+      }
+
       const level = parsed.risk_level || parsed.riskLevel || parsed.level || '';
       const prob = parsed.risk_probability ?? parsed.probability ?? parsed.risk ?? parsed.score ?? null;
       const probText =
