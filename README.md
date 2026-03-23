@@ -48,12 +48,17 @@ POST /api/dify/chat-messages
 ![登录页面](picture/登录页面.png)
 ![主页面](picture/主页面.png)
 ![咨询医师界面](picture/咨询医师界面.png)
+![糖尿病健康助手界面](picture/糖尿病健康助手界面.png)
 ![糖尿病风险预测主界面](picture/糖尿病风险预测主界面.png)
 ![生活方案定制-生活习惯描述](picture/生活方案定制-生活习惯描述.png)
 ![生活方案定制-期望或已有建议](picture/生活方案定制-期望或已有建议.png)
 ![生活方案定制-个性化方案生成](picture/生活方案定制-个性化方案生成.png)
 ![打卡页面上半](picture/打卡页面上半.png)
 ![打卡页面下半](picture/打卡页面下半.png)
+![方案-趋势上半](picture/方案-趋势上半.png)
+![方案-趋势下半](picture/方案-趋势下半.png)
+![打卡-提醒设置界面](picture/打卡-提醒设置界面.png)
+![打卡-本月总结](picture/打卡-本月总结.png)
 
 ## 目录结构
 
